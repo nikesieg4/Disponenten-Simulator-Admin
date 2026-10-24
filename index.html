@@ -17,7 +17,8 @@
     <h1>Anmelden</h1>
     <p class="hint">Admin-Passwort. Es wird im Supabase-SQL-Editor mit <code>select admin_set_password('…');</code> festgelegt.</p>
     <form id="login-form" autocomplete="off">
-      <label class="fld"><span>Passwort</span><input id="pw" type="password" autocomplete="current-password" required minlength="12"></label>
+      <input type="text" name="username" autocomplete="username" value="Codes-Admin" readonly hidden aria-hidden="true">
+      <label class="fld"><span>Passwort</span><input id="pw" name="password" type="password" autocomplete="current-password" required minlength="12"></label>
       <button class="btn primary" type="submit">Anmelden</button>
     </form>
     <p id="login-err" class="err" role="alert"></p>
@@ -28,9 +29,9 @@
       <h2 id="form-title">Neuer Code</h2>
       <form id="code-form" autocomplete="off">
         <div class="row">
-          <label class="fld"><span>Code</span><input id="f-code" required pattern="[A-Za-z0-9_\-]{3,32}" maxlength="32" placeholder="SOMMER25"></label>
+          <label class="fld"><span>Code</span><input id="f-code" name="reward-code" required pattern="[A-Za-z0-9_\-]{3,32}" maxlength="32" placeholder="SOMMER25" autocomplete="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"></label>
           <button type="button" class="btn ghost" id="f-random">Zufällig</button>
-          <label class="fld grow"><span>Notiz (nur für dich)</span><input id="f-note" maxlength="200" placeholder="z. B. Instagram-Post 24.10."></label>
+          <label class="fld grow"><span>Notiz (nur für dich)</span><input id="f-note" maxlength="200" autocomplete="off" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other" placeholder="z. B. Instagram-Post 24.10."></label>
         </div>
         <div class="row">
           <label class="fld"><span>Läuft ab (leer = permanent)</span><input id="f-exp" type="datetime-local"></label>

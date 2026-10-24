@@ -35,10 +35,11 @@
         </div>
         <div class="row">
           <label class="fld"><span>Läuft ab (leer = permanent)</span><input id="f-exp" type="datetime-local"></label>
-          <label class="fld"><span>Max. Einlösungen (leer = unbegrenzt)</span><input id="f-max" type="number" min="1" step="1"></label>
+          <label class="fld"><span>Max. Spieler insgesamt (leer = alle)</span><input id="f-max" type="number" min="1" step="1" placeholder="alle"></label>
           <label class="fld"><span>Nur Konten jünger als … Tage</span><input id="f-new" type="number" min="1" step="1" placeholder="alle"></label>
           <label class="chk"><input id="f-active" type="checkbox" checked> Aktiv</label>
         </div>
+        <p class="hint">Jeder Spieler kann einen Code genau einmal einlösen. „Max. Spieler“ begrenzt, wie viele Spieler ihn insgesamt einlösen können, z. B. 100 = die ersten 100.</p>
         <h3>Belohnungen</h3>
         <div id="rewards"></div>
         <div class="row">
@@ -58,7 +59,7 @@
     <div class="card">
       <div class="row"><h2>Codes</h2><span class="sp"></span><button class="btn ghost" id="reload">Aktualisieren</button></div>
       <div class="tbl-wrap"><table>
-        <thead><tr><th>Code</th><th>Belohnungen</th><th>Gültig</th><th>Eingelöst</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Code</th><th>Belohnungen</th><th>Gültig</th><th>Spieler</th><th>Status</th><th></th></tr></thead>
         <tbody id="codes"></tbody>
       </table></div>
       <div id="redeemers" class="hidden"></div>

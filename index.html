@@ -38,6 +38,7 @@
           <label class="fld"><span>Max. Spieler insgesamt (leer = alle)</span><input id="f-max" type="number" min="1" step="1" placeholder="alle"></label>
           <label class="fld"><span>Nur Konten jünger als … Tage</span><input id="f-new" type="number" min="1" step="1" placeholder="alle"></label>
           <label class="chk"><input id="f-active" type="checkbox" checked> Aktiv</label>
+          <label class="chk"><input id="f-premium" type="checkbox"> Nur Premium</label>
         </div>
         <p class="hint">Jeder Spieler kann einen Code genau einmal einlösen. „Max. Spieler“ begrenzt, wie viele Spieler ihn insgesamt einlösen können, z. B. 100 = die ersten 100.</p>
         <h3>Belohnungen</h3>
@@ -63,6 +64,28 @@
         <tbody id="codes"></tbody>
       </table></div>
       <div id="redeemers" class="hidden"></div>
+    </div>
+
+    <div class="card">
+      <h2>Einsatzpunkte gutschreiben</h2>
+      <p class="hint">Bis Stripe angebunden ist. Negative Werte ziehen EP ab (nie unter 0). Jede Buchung landet im EP-Protokoll.</p>
+      <form id="ep-form" autocomplete="off">
+        <div class="row">
+          <label class="fld"><span>Spieler</span><input id="ep-user" required maxlength="30" autocomplete="off" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"></label>
+          <label class="fld"><span>EP (±)</span><input id="ep-amount" type="number" step="1" min="-100000" max="100000" required></label>
+          <label class="fld grow"><span>Notiz</span><input id="ep-note" maxlength="200" placeholder="z. B. Testkauf, Gewinnspiel" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
+          <button class="btn primary" type="submit">Gutschreiben</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2>Premium &amp; Discord</h2><span class="sp"></span><button class="btn ghost" id="prem-reload">Aktualisieren</button></div>
+      <p class="hint">Alle Spieler mit EP, Premium oder Discord-ID. Spieler mit aktivem Premium und Discord-ID bekommen die Rolle VIP (bis der Bot kommt: von Hand).</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Spieler</th><th>EP</th><th>Premium</th><th>Discord-User-ID</th></tr></thead>
+        <tbody id="prem"></tbody>
+      </table></div>
     </div>
   </section>
 </main>

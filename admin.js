@@ -123,26 +123,31 @@ function statusBase(c) {
   if (c.max_uses && c.uses >= c.max_uses) return '<span class="tag off">aufgebraucht</span>';
   return '<span class="tag on">aktiv</span>';
 }
-/* EP gutschreiben und Premium-Liste */
+/* EP, RP oder Premium schenken und Premium-Liste */
+const GRANT = { ep: { unit: 'EP', max: 100000 }, rp: { unit: 'RP', max: 100000 }, premium: { unit: 'Tage Premium', max: 3650 } };
+$('ep-kind').onchange = () => { const g = GRANT[$('ep-kind').value]; $('ep-amount').min = -g.max; $('ep-amount').max = g.max;
+  $('ep-amount-l').textContent = $('ep-kind').value === 'premium' ? 'Tage (±)' : 'Anzahl (±)'; };
 $('ep-form').onsubmit = async e => {
   e.preventDefault();
-  const user = $('ep-user').value.trim(), amount = Math.trunc(Number($('ep-amount').value));
+  const user = $('ep-user').value.trim(), kind = $('ep-kind').value, amount = Math.trunc(Number($('ep-amount').value)), g = GRANT[kind];
   if (!user || !amount) return;
-  if (!confirm(`${amount > 0 ? amount + ' EP gutschreiben' : -amount + ' EP abziehen'}: ${user}?`)) return;
+  if (!confirm(`${user}: ${Math.abs(amount)} ${g.unit} ${amount > 0 ? 'schenken' : 'abziehen'}?`)) return;
   try {
-    const r = await rpc('admin_ep_grant', { p_token: token, p_username: user, p_amount: amount, p_note: $('ep-note').value.trim() });
+    const r = await rpc('admin_grant', { p_token: token, p_username: user, p_kind: kind, p_amount: amount, p_note: $('ep-note').value.trim() });
     if (!r || r.error) { toast((r && r.error) || 'Fehler', true); return; }
-    toast(`${user}: jetzt ${r.ep} EP`); $('ep-form').reset(); loadPremium();
+    const on = r.premium_until && new Date(r.premium_until).getTime() > Date.now();
+    toast(`${user}: ${kind === 'ep' ? r.ep + ' EP' : kind === 'rp' ? r.rp + ' RP' : on ? 'Premium bis ' + fmtDate(r.premium_until) : 'kein Premium mehr'}`);
+    $('ep-user').value = ''; $('ep-amount').value = ''; $('ep-note').value = ''; loadPremium();
   } catch (err) { toast(err.message, true); }
 };
 async function loadPremium() {
   try {
     const r = await rpc('admin_premium_list', { p_token: token }), list = (r && r.list) || [];
     $('prem').innerHTML = list.length ? list.map(x => { const on = x.premium_until && new Date(x.premium_until).getTime() > Date.now();
-      return `<tr><td><b>${esc(x.name)}</b></td><td class="mono">${x.ep}</td>
+      return `<tr><td><b>${esc(x.name)}</b></td><td class="mono">${x.ep}</td><td class="mono">${x.rp ?? 0}</td>
         <td>${on ? `<span class="tag on">bis ${fmtDate(x.premium_until)}</span>${x.auto ? '' : ' <span class="hint">keine Verlängerung</span>'}` : (x.premium_until ? `<span class="tag off">abgelaufen</span>` : '<span class="hint">—</span>')}</td>
         <td class="mono">${x.discord_id ? esc(x.discord_id) + (on ? ' <span class="tag prem">VIP</span>' : '') : '<span class="hint">—</span>'}</td></tr>`; }).join('')
-      : '<tr><td colspan="4" class="hint">Noch niemand.</td></tr>';
+      : '<tr><td colspan="5" class="hint">Noch niemand.</td></tr>';
   } catch (err) { toast(err.message, true); }
 }
 $('prem-reload').onclick = loadPremium;

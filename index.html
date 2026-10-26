@@ -67,23 +67,26 @@
     </div>
 
     <div class="card">
-      <h2>Einsatzpunkte gutschreiben</h2>
-      <p class="hint">Bis Stripe angebunden ist. Negative Werte ziehen EP ab (nie unter 0). Jede Buchung landet im EP-Protokoll.</p>
+      <h2>Schenken</h2>
+      <p class="hint">Einsatzpunkte, Forschungspunkte oder Premium-Tage an einen Spieler. Negative Werte ziehen ab (nie unter 0, Premium endet höchstens sofort).
+        Geschenkte Premium-Tage kosten keine EP und werden an eine laufende Laufzeit angehängt.</p>
       <form id="ep-form" autocomplete="off">
         <div class="row">
           <label class="fld"><span>Spieler</span><input id="ep-user" required maxlength="30" autocomplete="off" data-lpignore="true" data-1p-ignore data-bwignore="true" data-form-type="other"></label>
-          <label class="fld"><span>EP (±)</span><input id="ep-amount" type="number" step="1" min="-100000" max="100000" required></label>
-          <label class="fld grow"><span>Notiz</span><input id="ep-note" maxlength="200" placeholder="z. B. Testkauf, Gewinnspiel" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
-          <button class="btn primary" type="submit">Gutschreiben</button>
+          <label class="fld"><span>Was</span><select id="ep-kind">
+            <option value="ep">Einsatzpunkte (EP)</option><option value="rp">Forschungspunkte (RP)</option><option value="premium">Premium (Tage)</option></select></label>
+          <label class="fld"><span id="ep-amount-l">Anzahl (±)</span><input id="ep-amount" type="number" step="1" min="-100000" max="100000" required></label>
+          <label class="fld grow"><span>Notiz</span><input id="ep-note" maxlength="200" placeholder="z. B. Gewinnspiel, Entschädigung" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other"></label>
+          <button class="btn primary" type="submit">Schenken</button>
         </div>
       </form>
     </div>
 
     <div class="card">
       <div class="row"><h2>Premium &amp; Discord</h2><span class="sp"></span><button class="btn ghost" id="prem-reload">Aktualisieren</button></div>
-      <p class="hint">Alle Spieler mit EP, Premium oder Discord-ID. Spieler mit aktivem Premium und Discord-ID bekommen die Rolle VIP (bis der Bot kommt: von Hand).</p>
+      <p class="hint">Alle Spieler mit EP, RP, Premium oder Discord-ID. Spieler mit aktivem Premium und Discord-ID bekommen die Rolle VIP (bis der Bot kommt: von Hand).</p>
       <div class="tbl-wrap"><table>
-        <thead><tr><th>Spieler</th><th>EP</th><th>Premium</th><th>Discord-User-ID</th></tr></thead>
+        <thead><tr><th>Spieler</th><th>EP</th><th>RP</th><th>Premium</th><th>Discord-User-ID</th></tr></thead>
         <tbody id="prem"></tbody>
       </table></div>
     </div>

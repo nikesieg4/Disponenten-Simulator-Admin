@@ -29,7 +29,11 @@ Reine statische Seite (HTML/CSS/JS, keine Abhängigkeiten).
 | Gebäude-Gutschein | Feuerwache, Akademie oder Leitstelle: Grundpreis beim Bauen gratis |
 | Erweiterungs-Gutschein | eine Erweiterung gratis (Reiter „Erweiterungen“ der passenden Wache/Akademie/Leitstelle) |
 
-Grenzen je Code: Ablaufdatum, maximale Einlösungen, nur neue Konten (jünger als X Tage), aktiv/deaktiviert.
+Grenzen je Code: Ablaufdatum, maximale Einlösungen, nur neue Konten (jünger als X Tage), aktiv/deaktiviert, nur Premium.
+
+## Einsatzpunkte und Premium
+- **Einsatzpunkte gutschreiben:** bis Stripe angebunden ist, von Hand (auch negative Werte).
+- **Premium & Discord:** alle Spieler mit EP, Premium oder Discord-User-ID. Wer aktives Premium und eine Discord-ID hat, bekommt die Rolle VIP.
 Jeder Code ist pro Konto einmal einlösbar.
 
 ## Listen aktualisieren

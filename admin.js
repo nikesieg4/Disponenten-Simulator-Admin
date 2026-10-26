@@ -86,7 +86,7 @@ const toLocal = iso => { if (!iso) return ''; const d = new Date(iso); d.setMinu
 function editCode(c) {
   resetForm(); editing = c.code; $('rewards').innerHTML = '';
   $('f-code').value = c.code; $('f-code').disabled = true; $('f-note').value = c.note || ''; $('f-exp').value = toLocal(c.expires_at);
-  $('f-max').value = c.max_uses || ''; $('f-new').value = c.new_days || ''; $('f-active').checked = c.active;
+  $('f-max').value = c.max_uses || ''; $('f-new').value = c.new_days || ''; $('f-active').checked = c.active; $('f-premium').checked = !!c.premium_only;
   c.rewards.forEach(rewardRow);
   $('form-title').textContent = `Code ${c.code} bearbeiten`; $('f-save').textContent = 'Änderungen speichern'; $('f-cancel').classList.remove('hidden');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,7 +96,7 @@ $('code-form').onsubmit = async e => {
   const rewards = readRewards(); if (!rewards.length) { $('form-err').textContent = 'Mindestens eine Belohnung hinzufügen'; return; }
   const exp = $('f-exp').value;
   const p = { code: $('f-code').value.trim().toUpperCase(), note: $('f-note').value.trim(), expires_at: exp ? new Date(exp).toISOString() : '',
-    max_uses: Number($('f-max').value) || 0, new_days: Number($('f-new').value) || 0, active: $('f-active').checked, rewards };
+    max_uses: Number($('f-max').value) || 0, new_days: Number($('f-new').value) || 0, active: $('f-active').checked, premium_only: $('f-premium').checked, rewards };
   if (!editing && codes.some(c => c.code === p.code)) { $('form-err').textContent = `Code ${p.code} gibt es schon – unten auf „Bearbeiten“ klicken`; return; }
   try {
     const r = await rpc('admin_code_save', { p_token: token, p });
@@ -114,12 +114,40 @@ function rewardText(r) {
   return r.type;
 }
 function status(c) {
+  if (c.premium_only && c.active) return statusBase(c) + ' <span class="tag prem">Premium</span>';
+  return statusBase(c);
+}
+function statusBase(c) {
   if (!c.active) return '<span class="tag off">deaktiviert</span>';
   if (c.expires_at && new Date(c.expires_at).getTime() < Date.now()) return '<span class="tag off">abgelaufen</span>';
   if (c.max_uses && c.uses >= c.max_uses) return '<span class="tag off">aufgebraucht</span>';
   return '<span class="tag on">aktiv</span>';
 }
+/* EP gutschreiben und Premium-Liste */
+$('ep-form').onsubmit = async e => {
+  e.preventDefault();
+  const user = $('ep-user').value.trim(), amount = Math.trunc(Number($('ep-amount').value));
+  if (!user || !amount) return;
+  if (!confirm(`${amount > 0 ? amount + ' EP gutschreiben' : -amount + ' EP abziehen'}: ${user}?`)) return;
+  try {
+    const r = await rpc('admin_ep_grant', { p_token: token, p_username: user, p_amount: amount, p_note: $('ep-note').value.trim() });
+    if (!r || r.error) { toast((r && r.error) || 'Fehler', true); return; }
+    toast(`${user}: jetzt ${r.ep} EP`); $('ep-form').reset(); loadPremium();
+  } catch (err) { toast(err.message, true); }
+};
+async function loadPremium() {
+  try {
+    const r = await rpc('admin_premium_list', { p_token: token }), list = (r && r.list) || [];
+    $('prem').innerHTML = list.length ? list.map(x => { const on = x.premium_until && new Date(x.premium_until).getTime() > Date.now();
+      return `<tr><td><b>${esc(x.name)}</b></td><td class="mono">${x.ep}</td>
+        <td>${on ? `<span class="tag on">bis ${fmtDate(x.premium_until)}</span>${x.auto ? '' : ' <span class="hint">keine Verlängerung</span>'}` : (x.premium_until ? `<span class="tag off">abgelaufen</span>` : '<span class="hint">—</span>')}</td>
+        <td class="mono">${x.discord_id ? esc(x.discord_id) + (on ? ' <span class="tag prem">VIP</span>' : '') : '<span class="hint">—</span>'}</td></tr>`; }).join('')
+      : '<tr><td colspan="4" class="hint">Noch niemand.</td></tr>';
+  } catch (err) { toast(err.message, true); }
+}
+$('prem-reload').onclick = loadPremium;
 async function load() {
+  loadPremium();
   try { const r = await rpc('admin_codes', { p_token: token }); codes = (r && r.codes) || []; render(); } catch (err) { toast(err.message, true); }
 }
 $('reload').onclick = load;

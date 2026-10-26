@@ -38,6 +38,7 @@ td{ padding:9px 8px; border-bottom:1px solid var(--border); vertical-align:top; 
 td.acts{ white-space:nowrap; text-align:right; }
 .tag{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px; }
 .tag.on{ color:#86efac; background:#14532d55; } .tag.off{ color:var(--mut); background:var(--panel-3); }
+.tag.prem{ color:#1a1405; background:#f59e0b; }
 #redeemers{ border-top:1px solid var(--border); padding-top:10px; } #redeemers ul{ margin:6px 0 0; padding-left:18px; }
 .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--panel-3); border:1px solid var(--border-2); padding:10px 16px; border-radius:10px; max-width:calc(100% - 32px); }
 .toast.bad{ border-color:#7f1d1d; color:#fca5a5; }
